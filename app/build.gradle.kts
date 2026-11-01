@@ -20,7 +20,10 @@ dependencies { implementation("org.apache.commons:commons-compress:1.26.2") }
 // Build-time cornerstone check: editing assets/cornerstone.txt stops the build.
 val verifyCornerstone by tasks.registering {
     doLast {
-        val h = java.security.MessageDigest.getInstance("SHA-256").digest(file("src/main/assets/cornerstone.txt").readBytes()).joinToString("") { "%02x".format(it) }
+val h = java.security.MessageDigest
+    .getInstance("SHA-256")
+    .digest(file("src/main/assets/cornerstone.txt").readBytes())
+    .joinToString("") { byte -> "%02x".format(byte.toInt() and 0xff) }
         val exp = Regex("SHA = \"([0-9a-f]{64})\"").find(file("src/main/java/org/xlinux/Integrity.kt").readText())?.groupValues?.get(1)
         if (h != exp) throw GradleException("CORNERSTONE MODIFIED - build stopped")
     }
