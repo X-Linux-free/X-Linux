@@ -1,0 +1,6 @@
+X LINUX CORNERSTONE - DO NOT MODIFY
+Project: X Linux
+Author: Ahmed Mohamed Ibrahim
+Alias: Al-Jinn (الجن)
+Region: Eastern Region, Al-Qurain
+Notice: Any change to this file stops the application.

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>X Linux</title>
+<style>
+*{touch-action:manipulation}html{overscroll-behavior:none}.nat #sb{display:none}.nat #home{height:100%;padding-top:10px}
+
+:root{--bg:#fdf8ff;--sf:#f3edf7;--sf2:#e8e0ee;--ln:#dcd4e2;--tx:#1d1b20;--mu:#625b71;--a:#6750a4;--on:#fff;--wp:radial-gradient(90% 45% at 90% 5%,#ffd8e4,transparent 70%),radial-gradient(90% 50% at 0 100%,#c2e7ff,transparent 70%),linear-gradient(#efe6fb,#f9f1ff);--glass:#ffffffb0;color-scheme:light}
+:root[data-theme="dark"]{--bg:#141218;--sf:#211f26;--sf2:#2b2930;--ln:#3a373f;--tx:#e6e0e9;--mu:#cac4d0;--a:#d0bcff;--on:#381e72;--wp:radial-gradient(90% 45% at 90% 5%,#4a2540,transparent 70%),radial-gradient(90% 50% at 0 100%,#173a52,transparent 70%),linear-gradient(#17121f,#100d16);--glass:#2b2930d0;color-scheme:dark}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--sf2);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Tahoma,sans-serif;overflow:hidden}
+#ph{position:relative;height:100%;max-width:460px;margin:auto;overflow:hidden;background:var(--wp);color:var(--tx);padding-top:env(safe-area-inset-top,0px)}
+#sb{display:flex;justify-content:space-between;align-items:center;padding:10px 24px 0;font-size:14px;font-weight:600}
+#home{height:calc(100% - 34px);display:flex;flex-direction:column;padding:4px 18px calc(22px + env(safe-area-inset-bottom,0px))}
+#clk{margin:22px 6px 20px;text-align:start}
+#clk b{display:block;font-size:76px;font-weight:300;letter-spacing:-2px;line-height:1}
+#clk span{color:var(--mu);font-size:16px}
+#wd{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.wc{border-radius:28px;padding:16px 18px;background:#ffd8e4;color:#31111d;font-size:13px}
+.wc b{display:block;font-size:24px;font-weight:500;line-height:1.3}
+.w2{background:#c2e7ff;color:#001d33}
+:root[data-theme="dark"] .wc{background:#4a2540;color:#ffd8e4}:root[data-theme="dark"] .w2{background:#173a52;color:#c2e7ff}
+.bar{height:8px;background:#0002;border-radius:9px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;width:0;background:currentColor;opacity:.75;border-radius:9px;transition:width .4s}
+#grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px 4px;margin:28px 0 auto}
+.ic{background:none;border:0;color:inherit;font:inherit;display:flex;flex-direction:column;align-items:center;gap:7px;font-size:12px;cursor:pointer}
+.ic u{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-size:24px;text-decoration:none;box-shadow:0 1px 3px #0003;transition:transform .12s}
+.ic:active u{transform:scale(.88)}
+.ic s{text-decoration:none;max-width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#sp{height:52px;border-radius:99px;background:var(--glass);display:flex;align-items:center;gap:10px;padding:0 20px;color:var(--mu);font-size:15px;margin-bottom:12px}
+#dock{display:grid;grid-template-columns:repeat(4,1fr);padding:12px 8px;border-radius:36px;background:var(--glass)}
+#dock s{display:none}
+#gb{position:absolute;bottom:calc(7px + env(safe-area-inset-bottom,0px));left:50%;width:110px;height:5px;margin-left:-55px;border-radius:9px;background:var(--tx);opacity:.45;border:0;z-index:9}
+#sheet{position:absolute;inset:0;background:var(--bg);color:var(--tx);transform:translateY(100%);transition:transform .22s ease-out;display:flex;flex-direction:column;z-index:5;padding-top:env(safe-area-inset-top,0px);visibility:hidden}
+#sheet.on{transform:none;visibility:visible}
+#hd{display:flex;align-items:center;gap:14px;padding:14px 16px 10px;font-weight:500;font-size:24px}
+#hd button{background:var(--sf2);border:0;color:var(--tx);width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer}
+#bd{flex:1;overflow:auto;padding:6px 16px 40px}
+.pg{display:none}.pg.on{display:block}
+.card{background:var(--sf);border-radius:28px;padding:20px;margin-bottom:12px}
+.card h2{font-size:16px;font-weight:600;margin-bottom:10px}
+.mu{color:var(--mu);font-size:14px}
+.lbl{display:flex;justify-content:space-between;font-size:14px;color:var(--mu)}
+#sheet .bar{background:var(--sf2);color:var(--a);margin:6px 0 14px}
+.btn{background:var(--a);color:var(--on);font:600 15px inherit;border:0;padding:15px;border-radius:99px;width:100%;cursor:pointer}
+.btn[disabled]{opacity:.6}
+#tout{background:#1d1b20;color:#cdeccd;border-radius:20px;padding:14px;height:300px;overflow:auto;font:13px/1.55 ui-monospace,Menlo,Consolas,monospace;direction:ltr;text-align:left;white-space:pre-wrap}
+.tin{display:flex;gap:8px;margin-top:10px;direction:ltr}
+.tin input{flex:1;min-width:0;background:var(--sf2);border:0;color:var(--tx);border-radius:99px;padding:13px 18px;font:14px ui-monospace,Menlo,monospace}
+.tin button{background:var(--a);color:var(--on);border:0;border-radius:99px;width:48px}
+.keys{display:flex;gap:6px;margin-top:8px;direction:ltr;overflow-x:auto}
+.keys button{background:var(--sf2);border:0;color:var(--tx);border-radius:99px;padding:8px 14px;font:13px ui-monospace,monospace;flex:none}
+.warn{font-size:12px;color:#b26a00;margin-bottom:8px}
+ul.f{list-style:none;padding:0}ul.f li{padding:12px 0;border-bottom:1px solid var(--ln)}ul.f li:last-child{border:0}
+.set{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--ln);gap:10px}.set:last-child{border:0}
+.sw{width:52px;height:30px;border-radius:99px;background:var(--sf2);border:2px solid var(--mu);position:relative;flex:none;cursor:pointer}
+.sw::after{content:"";position:absolute;top:4px;inset-inline-start:4px;width:18px;height:18px;border-radius:50%;background:var(--mu);transition:.2s}
+.sw.on{background:var(--a);border-color:var(--a)}.sw.on::after{inset-inline-start:26px;background:var(--on)}
+select{background:var(--sf2);color:var(--tx);border:0;border-radius:14px;padding:10px;font:inherit;max-width:55%}
+.big{text-align:center;padding:40px 10px}.big u{display:grid;place-items:center;width:92px;height:92px;margin:0 auto 14px;border-radius:50%;font-size:40px;text-decoration:none}
+.pill{display:inline-block;font-size:12px;padding:4px 14px;border-radius:99px;background:var(--sf2);color:var(--mu);margin-top:8px}
+
+#p-term.on{display:flex;height:100%}
+.tm{display:flex;flex-direction:column;width:100%;background:#16141a;border-radius:26px;overflow:hidden;box-shadow:0 8px 24px #0004;direction:ltr}
+.tbar{display:flex;align-items:center;gap:7px;padding:12px 16px;background:#211f26}
+.tbar i{width:11px;height:11px;border-radius:50%;background:#ff5f57}.tbar i:nth-child(2){background:#febc2e}.tbar i:nth-child(3){background:#28c840}
+.tt{margin:0 auto;color:#cac4d0;font:12px ui-monospace,Menlo,monospace}
+.tbar button{background:none;border:0;color:#cac4d0;font-size:18px;cursor:pointer}
+.tw{font-size:11px;color:#fbbf24;background:#2b2930;padding:6px 16px;direction:initial}
+#tout{flex:1;background:none;border-radius:0;height:auto;padding:14px 16px;color:#d6e4d6;font:13px/1.6 ui-monospace,Menlo,Consolas,monospace;overflow:auto;white-space:pre-wrap;text-align:left}
+.pr{color:#7ee787}.pb{color:#79c0ff}
+.tin{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#1d1b20;margin:0}
+.tin .pr{font:14px ui-monospace,monospace}
+.tin input{flex:1;min-width:0;background:none;border:0;outline:0;color:#fff;border-radius:0;padding:6px 0;font:14px ui-monospace,Menlo,monospace}
+.tin button{background:#7ee787;color:#0b1a0e;border:0;border-radius:50%;width:38px;height:38px;font-size:18px;font-weight:700}
+.keys{display:flex;gap:6px;margin:0;padding:8px 12px 12px;background:#211f26;overflow-x:auto}
+.keys button{background:#2f2d35;border:0;color:#e6e0e9;border-radius:10px;min-width:44px;padding:10px 12px;font:13px ui-monospace,monospace;flex:1}
+#dock{padding:12px 6px 10px;border-radius:34px;box-shadow:0 6px 20px #0002;margin-bottom:6px}
+#dock s{display:block;font-size:11px;color:var(--mu)}
+#dock .ic u{width:52px;height:52px}
+#home{padding-bottom:calc(34px + env(safe-area-inset-bottom,0px))}
+
+ul.f li{display:flex;justify-content:space-between;align-items:center;gap:8px}ul.f li span{flex:1;cursor:pointer;padding:4px 0;word-break:break-all}
+ul.f li button{background:var(--sf2);border:0;color:var(--mu);width:32px;height:32px;border-radius:50%;cursor:pointer}
+.nf{display:flex;gap:8px}.nf input,#ea{background:var(--sf);border:0;color:var(--tx);border-radius:99px;padding:14px 18px;font:inherit;min-width:0;flex:1;outline:0}
+.nf button{background:var(--a);color:var(--on);border:0;border-radius:99px;padding:0 16px;font-size:16px;cursor:pointer}
+#ea{width:100%;min-height:320px;border-radius:18px;background:var(--sf2);font:14px/1.6 ui-monospace,Menlo,monospace;resize:none;direction:ltr;text-align:left}
+.gi{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--sf2);margin-inline-end:12px;font-size:16px}
+.set>div{display:flex;align-items:center}
+@media (min-width:500px){#ph{height:min(100%,880px);margin-top:max(0px,calc((100% - 880px)/2));border-radius:36px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+#grid{flex:1;min-height:0;overflow-y:auto;align-content:start;margin:20px 0 14px}
+#pop{position:absolute;inset:0;background:#0007;display:none;align-items:flex-end;z-index:20}#pop.on{display:flex}
+.pc{background:var(--bg);color:var(--tx);width:100%;border-radius:28px 28px 0 0;padding:20px 20px 28px;max-height:75%;display:flex;flex-direction:column}
+.pc h3{font-size:18px;font-weight:600}#pl{overflow:auto;margin:10px 0}
+.rw{display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid var(--ln);font:14px ui-monospace,Menlo,monospace}
+.rw input{width:20px;height:20px;accent-color:var(--a)}
+.pb2{display:flex;gap:10px}.pb2 button{flex:1;border:0;border-radius:99px;padding:14px;font:600 15px inherit;cursor:pointer;background:var(--sf2);color:var(--tx)}
+.pb2 button#pyes{background:var(--a);color:var(--on)}
+
+.crow{display:flex;align-items:center;gap:12px;width:100%;background:none;border:0;border-bottom:1px solid var(--ln);color:var(--tx);font:inherit;padding:12px 2px;text-align:start;cursor:pointer}
+.crow:last-child{border:0}.crow b{flex:1;font-weight:500}.crow i{color:var(--mu);font-style:normal}
+.set input[type=range]{accent-color:var(--a);width:130px}
+.lite *,.rm *{transition:none!important;animation:none!important}.lite #sp,.lite #dock{background:var(--sf)!important;backdrop-filter:none!important}
+
+
+/* X Linux mobile-first refresh: touch-friendly, compact, and responsive */
+:root{--a:#6750a4;--radius-xl:28px}
+:root[data-theme="dark"]{--a:#bda7ff}
+html,body{width:100%;min-height:100%;overscroll-behavior:none}
+#ph{width:100%;max-width:520px;background:var(--wp);box-shadow:0 0 48px #00000012}
+#sb{padding:calc(8px + env(safe-area-inset-top,0px)) 22px 4px;letter-spacing:.1px}
+#home{height:calc(100% - 28px);padding:8px 18px calc(34px + env(safe-area-inset-bottom,0px));gap:0}
+#welcome{display:flex;align-items:center;gap:12px;padding:14px 4px 4px;min-width:0}
+.brandmark{width:46px;height:46px;display:grid;place-items:center;flex:none;border-radius:16px;background:linear-gradient(145deg,#a78bfa,#6d4aff);color:#fff;font-size:25px;font-weight:850;letter-spacing:-2px;box-shadow:0 6px 18px #6750a433}
+.welcome-copy{display:flex;flex-direction:column;min-width:0;flex:1;line-height:1.35}
+.welcome-copy strong{font-size:19px;font-weight:750;letter-spacing:-.3px}
+.welcome-copy span{font-size:12px;color:var(--mu);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.live-dot{width:10px;height:10px;flex:none;border-radius:50%;background:#35c879;box-shadow:0 0 0 5px #35c87920}
+#clk{margin:22px 4px 18px}
+#clk b{font-size:clamp(54px,15vw,72px);font-weight:250;letter-spacing:-2.5px}
+#clk span{font-size:14px}
+#wd{gap:10px}
+.wc{border-radius:22px;padding:15px 16px;box-shadow:0 5px 16px #00000008;min-width:0}
+.wc span{font-size:12px;font-weight:600;opacity:.85}
+.wc b{font-size:23px;font-weight:750;letter-spacing:-.5px;margin-top:3px;overflow-wrap:anywhere}
+.bar{height:6px;border-radius:99px}
+#grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px 6px;margin:24px 0 16px;padding:2px 0;scrollbar-width:none}
+#grid::-webkit-scrollbar{display:none}
+.ic{min-width:0;gap:8px;font-size:12px;font-weight:550}
+.ic u{width:54px;height:54px;border-radius:19px;font-size:23px;box-shadow:0 4px 12px #00000012}
+#sp{height:48px;flex:none;border:1px solid #ffffff35;border-radius:18px;margin-bottom:12px;padding:0 16px;box-shadow:0 4px 14px #00000008;backdrop-filter:blur(18px)}
+#dock{grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;padding:10px 5px 8px;border-radius:24px;background:var(--glass);border:1px solid #ffffff30;backdrop-filter:blur(18px);box-shadow:0 8px 24px #0000000d;margin-bottom:4px}
+#dock .ic u{width:46px;height:46px;border-radius:16px;font-size:21px}
+#dock .ic{gap:5px;font-size:11px}
+#sheet{background:var(--bg);padding-top:env(safe-area-inset-top,0px)}
+#hd{padding:12px 16px 14px;gap:12px;font-size:21px;font-weight:700;border-bottom:1px solid var(--ln)}
+#hd button{width:42px;height:42px;flex:none;background:var(--sf);font-size:25px}
+#bd{padding:14px 14px calc(28px + env(safe-area-inset-bottom,0px));scrollbar-width:thin}
+.card{border:1px solid color-mix(in srgb,var(--ln) 55%,transparent);border-radius:24px;padding:18px;margin-bottom:12px;box-shadow:0 3px 14px #00000005}
+.card h2{font-size:16px;font-weight:700}
+.btn{font-family:inherit;font-weight:700;min-height:50px;box-shadow:0 4px 12px color-mix(in srgb,var(--a) 20%,transparent)}
+#p-term.on{min-height:0}
+.tm{height:100%;min-height:380px;border:1px solid #ffffff12;border-radius:22px}
+.tbar{padding:13px 14px}
+#tout{min-height:120px;font-size:13px;overflow-wrap:anywhere}
+.tin{padding:10px 12px;gap:10px}
+.tin input{font-size:16px;min-height:42px}
+.tin button{width:42px;height:42px;flex:none}
+.keys{padding:9px 9px calc(12px + env(safe-area-inset-bottom,0px));gap:6px}
+.keys button{min-width:38px;min-height:42px;padding:9px 10px;flex:1 0 auto}
+.nf{gap:7px}
+.nf input,#ea{font-size:16px}
+.nf button{min-height:46px;min-width:44px}
+#ea{min-height:42vh}
+ul.f li{min-height:48px}
+ul.f li button{width:38px;height:38px;flex:none}
+.set{min-height:52px}
+select{min-height:42px}
+#pop{padding-bottom:env(safe-area-inset-bottom,0px)}
+.pc{border:1px solid var(--ln);padding:22px 18px calc(22px + env(safe-area-inset-bottom,0px))}
+@media(max-width:360px){#home{padding-inline:14px}#grid{gap:16px 2px}.ic u{width:48px;height:48px;border-radius:16px}.wc{padding:13px 12px}.wc b{font-size:21px}#clk b{font-size:54px}#dock .ic u{width:42px;height:42px}}
+@media(min-width:500px){#ph{height:min(100%,900px);margin-top:max(0px,calc((100% - 900px)/2));border-radius:32px}#home{height:calc(100% - 28px)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important}}
+
+</style></head><body>
+<div id="ph">
+<div id="sb"><span id="t1">--:--</span><span><span id="nt">●</span> X Linux</span></div>
+<div id="home">
+<div id="welcome"><div class="brandmark">X</div><div class="welcome-copy"><strong data-i="wl">Welcome</strong><span data-i="tag">Linux workspace in your pocket</span></div><span class="live-dot" aria-label="status"></span></div>
+<div id="clk"><b id="t2">--:--</b><span id="dt"></span></div>
+<div id="wd"><div class="wc"><span data-i="me"></span><b id="rm2">—</b><div class="bar"><i id="rb"></i></div></div><div class="wc w2"><span data-i="st"></span><b id="sm2">—</b><div class="bar"><i id="sb2"></i></div></div></div>
+<div id="grid"></div>
+<div id="sp">⌕ <span>X Linux</span></div>
+<div id="dock"></div>
+</div>
+<div id="sheet"><div id="hd"><button id="bk" aria-label="back">‹</button><span id="ti"></span></div><div id="bd">
+<div class="pg" id="p-term"><div class="tm"><div class="tbar"><i></i><i></i><i></i><span class="tt">xuser@xlinux: ~</span><button id="tcl" aria-label="clear">⌫</button></div><div class="tw" data-i="tw"></div><div id="ib" style="display:none;padding:10px 16px;background:#2b2930"><button class="btn" id="ibtn">⬇ Parrot OS</button></div><div id="tout"></div>
+<div class="tin"><span class="pr">$</span><input id="ci" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="help"><button id="run">↵</button></div>
+<div class="keys"><button data-k="Tab">Tab</button><button data-k="^C">^C</button><button data-k="↑">↑</button><button data-k="↓">↓</button><button data-k="-">-</button><button data-k="/">/</button><button data-k="|">|</button><button data-k="~">~</button></div></div></div>
+<div class="pg" id="p-files"><div class="card"><div class="set" style="padding-top:0"><h2 style="margin:0">~ /home/xuser</h2><span class="mu" id="fc"></span></div><ul class="f" id="fl"></ul></div>
+<div class="nf"><input id="nf" placeholder="name" autocapitalize="off" spellcheck="false"><button id="addf" aria-label="file">📄+</button><button id="addd" aria-label="folder">📁+</button></div></div>
+<div class="pg" id="p-ed"><div class="card"><div class="set" style="padding-top:0"><h2 style="margin:0" id="en"></h2><span class="mu">UTF-8</span></div><textarea id="ea" spellcheck="false"></textarea></div><button class="btn" id="svb">✓</button></div>
+<div class="pg" id="p-pkg"><div class="card"><h2 data-i="pk"></h2><div class="nf"><input id="pq" placeholder="nmap" autocapitalize="off" spellcheck="false"><button id="pib" data-i="ins"></button></div></div>
+<div class="card"><h2 data-i="pin"></h2><div class="nf" style="margin-bottom:8px"><input id="ps" autocapitalize="off" spellcheck="false"></div><ul class="f" id="pl2"></ul></div></div>
+<div class="pg" id="p-mon"><div class="card"><h2 data-i="rs"></h2><div class="lbl"><span data-i="me"></span><span id="rm">—</span></div><div class="bar"><i id="rb2"></i></div><div class="lbl"><span data-i="st"></span><span id="sm">—</span></div><div class="bar"><i id="sb3"></i></div><div class="lbl"><span data-i="cn"></span><span id="net">—</span></div></div></div>
+<div class="pg" id="p-upd"><div class="card"><h2 data-i="up"></h2><button class="btn" id="upd" data-i="ub"></button><p class="mu" id="um" style="margin-top:10px"></p></div></div>
+<div class="pg" id="p-set"><div id="sx"></div><div id="oldset" style="display:none"><select id="lang"></select><button class="sw" id="dk"></button><button class="sw on" id="lite"></button></div></div>
+<div class="pg" id="p-soon"><div class="big"><u id="su"></u><h2 id="sn"></h2><span class="pill" data-i="pv"></span><p class="mu" style="margin-top:14px" data-i="wp"></p></div></div>
+</div></div>
+<div id="pop"><div class="pc"><h3 id="ph3"></h3><div id="pl"></div><div class="pb2"><button id="pno"></button><button id="pyes"></button></div></div></div>
+<button id="gb" aria-label="home"></button>
+</div>
+<script>
+var $=function(i){return document.getElementById(i)};
+var L={"en": {"tag": "Linux workspace in your pocket", "pv": "Preview", "wl": "Welcome", "wp": "Linux environment is not installed yet. This is a design preview; real execution arrives with the core runtime.", "rs": "Device resources", "me": "Memory", "st": "Storage", "cn": "Connection", "hm": "Home", "tm": "Terminal", "fl": "Files", "pk": "Packages", "sg": "Settings", "up": "Updates", "ub": "Update", "ui": "Current version 0.1 · not checked yet", "uo": "No internet connection. The app works offline; try updating later.", "uc": "Checking…", "un": "Update source (GitHub Releases) is not linked in this preview.", "tw": "Preview mode: commands are simulated, not real Linux.", "pj": "Packages will run through APT inside the environment once installed. No packages yet.", "pf": "Performance", "li": "Lite mode (lowest resource use)", "dk": "Dark mode", "lg": "Language", "ab": "About", "ap": "X Linux · works fully offline · single file, no external libraries · collects no data.", "on": "Online", "of": "Offline (works fine)"}, "ar": {"tag": "مساحة Linux في جيبك", "pv": "معاينة", "wl": "مرحبًا بك", "wp": "بيئة Linux لم تُثبَّت بعد. هذه معاينة للتصميم، والتشغيل الفعلي يأتي مع نواة التطبيق.", "rs": "موارد الجهاز", "me": "الذاكرة", "st": "التخزين", "cn": "الاتصال", "hm": "الرئيسية", "tm": "الطرفية", "fl": "الملفات", "pk": "الحزم", "sg": "الإعدادات", "up": "التحديثات", "ub": "تحديث", "ui": "الإصدار الحالي 0.1 · لم يتم التحقق بعد", "uo": "لا يوجد اتصال بالإنترنت. التطبيق يعمل دون اتصال، جرّب التحديث لاحقًا.", "uc": "جارٍ التحقق…", "un": "مصدر التحديثات (GitHub Releases) لم يُربط بعد في هذه المعاينة.", "tw": "وضع المعاينة: الأوامر محاكاة وليست Linux حقيقيًا.", "pj": "ستعمل الحزم عبر APT داخل البيئة بعد تثبيتها. لا توجد حزم حاليًا.", "pf": "الأداء", "li": "وضع Lite (أقل استهلاك للموارد)", "dk": "الوضع الداكن", "lg": "اللغة", "ab": "عن التطبيق", "ap": "X Linux · يعمل دون إنترنت · ملف واحد بلا مكتبات خارجية · لا يجمع أي بيانات.", "on": "متصل", "of": "غير متصل (يعمل عادي)"}, "fr": {"tag": "Linux dans votre poche", "pv": "Aperçu", "wl": "Bienvenue", "wp": "Linux n'est pas encore installé. Ceci est un aperçu du design ; l'exécution réelle viendra avec le noyau.", "rs": "Ressources", "me": "Mémoire", "st": "Stockage", "cn": "Connexion", "hm": "Accueil", "tm": "Terminal", "fl": "Fichiers", "pk": "Paquets", "sg": "Réglages", "up": "Mises à jour", "ub": "Mettre à jour", "ui": "Version 0.1 · pas encore vérifiée", "uo": "Pas de connexion. L'app fonctionne hors ligne ; réessayez plus tard.", "uc": "Vérification…", "un": "Source de mises à jour (GitHub Releases) non liée dans cet aperçu.", "tw": "Mode aperçu : commandes simulées, pas du vrai Linux.", "pj": "Les paquets utiliseront APT dans l'environnement après installation. Aucun paquet.", "pf": "Performance", "li": "Mode Lite (ressources minimales)", "dk": "Mode sombre", "lg": "Langue", "ab": "À propos", "ap": "X Linux · 100 % hors ligne · un seul fichier, sans bibliothèque externe · aucune donnée collectée.", "on": "En ligne", "of": "Hors ligne (fonctionne)"}, "es": {"tag": "Linux en tu bolsillo", "pv": "Vista previa", "wl": "Bienvenido", "wp": "Linux aún no está instalado. Es una vista previa del diseño; la ejecución real llega con el núcleo.", "rs": "Recursos", "me": "Memoria", "st": "Almacenamiento", "cn": "Conexión", "hm": "Inicio", "tm": "Terminal", "fl": "Archivos", "pk": "Paquetes", "sg": "Ajustes", "up": "Actualizaciones", "ub": "Actualizar", "ui": "Versión 0.1 · sin comprobar", "uo": "Sin internet. La app funciona sin conexión; intenta más tarde.", "uc": "Comprobando…", "un": "La fuente de actualizaciones (GitHub Releases) no está vinculada en esta vista previa.", "tw": "Modo vista previa: comandos simulados, no Linux real.", "pj": "Los paquetes usarán APT dentro del entorno tras instalarlo. Aún no hay paquetes.", "pf": "Rendimiento", "li": "Modo Lite (mínimo consumo)", "dk": "Modo oscuro", "lg": "Idioma", "ab": "Acerca de", "ap": "X Linux · funciona sin conexión · un solo archivo, sin librerías externas · no recopila datos.", "on": "En línea", "of": "Sin conexión (funciona)"}, "de": {"tag": "Linux in deiner Tasche", "pv": "Vorschau", "wl": "Willkommen", "wp": "Linux ist noch nicht installiert. Dies ist eine Design-Vorschau; die echte Ausführung folgt mit dem Kern.", "rs": "Ressourcen", "me": "Speicher", "st": "Datenspeicher", "cn": "Verbindung", "hm": "Start", "tm": "Terminal", "fl": "Dateien", "pk": "Pakete", "sg": "Einstellungen", "up": "Updates", "ub": "Aktualisieren", "ui": "Version 0.1 · noch nicht geprüft", "uo": "Keine Internetverbindung. Die App läuft offline; versuche es später.", "uc": "Prüfe…", "un": "Update-Quelle (GitHub Releases) ist in dieser Vorschau nicht verknüpft.", "tw": "Vorschau: Befehle sind simuliert, kein echtes Linux.", "pj": "Pakete laufen nach der Installation über APT in der Umgebung. Noch keine Pakete.", "pf": "Leistung", "li": "Lite-Modus (geringster Verbrauch)", "dk": "Dunkelmodus", "lg": "Sprache", "ab": "Info", "ap": "X Linux · voll offline · eine Datei, keine externen Bibliotheken · keine Datenerhebung.", "on": "Online", "of": "Offline (funktioniert)"}, "tr": {"tag": "Cebinizde Linux", "pv": "Önizleme", "wl": "Hoş geldin", "wp": "Linux henüz kurulu değil. Bu bir tasarım önizlemesi; gerçek çalışma çekirdekle gelecek.", "rs": "Cihaz kaynakları", "me": "Bellek", "st": "Depolama", "cn": "Bağlantı", "hm": "Ana sayfa", "tm": "Terminal", "fl": "Dosyalar", "pk": "Paketler", "sg": "Ayarlar", "up": "Güncellemeler", "ub": "Güncelle", "ui": "Sürüm 0.1 · henüz kontrol edilmedi", "uo": "İnternet yok. Uygulama çevrimdışı çalışır; sonra deneyin.", "uc": "Kontrol ediliyor…", "un": "Güncelleme kaynağı (GitHub Releases) bu önizlemede bağlı değil.", "tw": "Önizleme modu: komutlar simüledir, gerçek Linux değil.", "pj": "Paketler kurulumdan sonra ortamda APT ile çalışır. Henüz paket yok.", "pf": "Performans", "li": "Lite modu (en az kaynak)", "dk": "Koyu mod", "lg": "Dil", "ab": "Hakkında", "ap": "X Linux · tamamen çevrimdışı · tek dosya, harici kütüphane yok · veri toplamaz.", "on": "Çevrimiçi", "of": "Çevrimdışı (çalışır)"}, "ru": {"tag": "Linux в вашем кармане", "pv": "Превью", "wl": "Добро пожаловать", "wp": "Linux ещё не установлен. Это превью дизайна; реальная работа появится с ядром.", "rs": "Ресурсы", "me": "Память", "st": "Хранилище", "cn": "Соединение", "hm": "Главная", "tm": "Терминал", "fl": "Файлы", "pk": "Пакеты", "sg": "Настройки", "up": "Обновления", "ub": "Обновить", "ui": "Версия 0.1 · не проверена", "uo": "Нет интернета. Приложение работает офлайн; попробуйте позже.", "uc": "Проверка…", "un": "Источник обновлений (GitHub Releases) не подключён в превью.", "tw": "Режим превью: команды имитируются, это не настоящий Linux.", "pj": "Пакеты будут работать через APT в среде после установки. Пакетов пока нет.", "pf": "Производительность", "li": "Режим Lite (минимум ресурсов)", "dk": "Тёмная тема", "lg": "Язык", "ab": "О приложении", "ap": "X Linux · полностью офлайн · один файл без внешних библиотек · не собирает данные.", "on": "Онлайн", "of": "Офлайн (работает)"}, "zh": {"tag": "口袋里的 Linux", "pv": "预览", "wl": "欢迎", "wp": "尚未安装 Linux 环境。这是设计预览，真实运行将随核心运行时提供。", "rs": "设备资源", "me": "内存", "st": "存储", "cn": "连接", "hm": "首页", "tm": "终端", "fl": "文件", "pk": "软件包", "sg": "设置", "up": "更新", "ub": "更新", "ui": "当前版本 0.1 · 尚未检查", "uo": "无网络连接。应用可离线使用，请稍后再试。", "uc": "检查中…", "un": "此预览中尚未关联更新源（GitHub Releases）。", "tw": "预览模式：命令为模拟，并非真实 Linux。", "pj": "安装后将通过环境内的 APT 管理软件包。暂无软件包。", "pf": "性能", "li": "Lite 模式（最低资源占用）", "dk": "深色模式", "lg": "语言", "ab": "关于", "ap": "X Linux · 完全离线 · 单文件、无外部库 · 不收集数据。", "on": "在线", "of": "离线（可正常使用）"}, "hi": {"tag": "आपकी जेब में Linux", "pv": "पूर्वावलोकन", "wl": "स्वागत है", "wp": "Linux अभी इंस्टॉल नहीं है। यह डिज़ाइन पूर्वावलोकन है; असली संचालन कोर के साथ आएगा।", "rs": "डिवाइस संसाधन", "me": "मेमोरी", "st": "स्टोरेज", "cn": "कनेक्शन", "hm": "होम", "tm": "टर्मिनल", "fl": "फ़ाइलें", "pk": "पैकेज", "sg": "सेटिंग्स", "up": "अपडेट", "ub": "अपडेट करें", "ui": "वर्शन 0.1 · अभी जाँचा नहीं गया", "uo": "इंटरनेट नहीं है। ऐप ऑफ़लाइन चलता है; बाद में कोशिश करें।", "uc": "जाँच हो रही है…", "un": "अपडेट स्रोत (GitHub Releases) इस पूर्वावलोकन में जुड़ा नहीं है।", "tw": "पूर्वावलोकन मोड: कमांड नकली हैं, असली Linux नहीं।", "pj": "इंस्टॉल के बाद पैकेज पर्यावरण में APT से चलेंगे। अभी कोई पैकेज नहीं।", "pf": "प्रदर्शन", "li": "Lite मोड (न्यूनतम संसाधन)", "dk": "डार्क मोड", "lg": "भाषा", "ab": "परिचय", "ap": "X Linux · पूरी तरह ऑफ़लाइन · एक फ़ाइल, बिना बाहरी लाइब्रेरी · कोई डेटा नहीं जुटाता।", "on": "ऑनलाइन", "of": "ऑफ़लाइन (काम करता है)"}, "pt": {"tag": "Linux no seu bolso", "pv": "Prévia", "wl": "Bem-vindo", "wp": "O Linux ainda não está instalado. Esta é uma prévia do design; a execução real vem com o núcleo.", "rs": "Recursos", "me": "Memória", "st": "Armazenamento", "cn": "Conexão", "hm": "Início", "tm": "Terminal", "fl": "Arquivos", "pk": "Pacotes", "sg": "Ajustes", "up": "Atualizações", "ub": "Atualizar", "ui": "Versão 0.1 · não verificada", "uo": "Sem internet. O app funciona offline; tente depois.", "uc": "Verificando…", "un": "A fonte de atualizações (GitHub Releases) não está ligada nesta prévia.", "tw": "Modo prévia: comandos simulados, não é Linux real.", "pj": "Os pacotes usarão APT no ambiente após a instalação. Nenhum pacote ainda.", "pf": "Desempenho", "li": "Modo Lite (mínimo de recursos)", "dk": "Modo escuro", "lg": "Idioma", "ab": "Sobre", "ap": "X Linux · 100% offline · arquivo único, sem bibliotecas externas · não coleta dados.", "on": "Online", "of": "Offline (funciona)"}, "id": {"tag": "Linux di saku Anda", "pv": "Pratinjau", "wl": "Selamat datang", "wp": "Linux belum terpasang. Ini pratinjau desain; eksekusi nyata hadir bersama inti.", "rs": "Sumber daya", "me": "Memori", "st": "Penyimpanan", "cn": "Koneksi", "hm": "Beranda", "tm": "Terminal", "fl": "Berkas", "pk": "Paket", "sg": "Pengaturan", "up": "Pembaruan", "ub": "Perbarui", "ui": "Versi 0.1 · belum diperiksa", "uo": "Tidak ada internet. Aplikasi berjalan offline; coba lagi nanti.", "uc": "Memeriksa…", "un": "Sumber pembaruan (GitHub Releases) belum terhubung di pratinjau ini.", "tw": "Mode pratinjau: perintah simulasi, bukan Linux asli.", "pj": "Paket akan berjalan lewat APT di lingkungan setelah terpasang. Belum ada paket.", "pf": "Performa", "li": "Mode Lite (sumber daya minimal)", "dk": "Mode gelap", "lg": "Bahasa", "ab": "Tentang", "ap": "X Linux · sepenuhnya offline · satu berkas, tanpa pustaka eksternal · tanpa pengumpulan data.", "on": "Online", "of": "Offline (berfungsi)"}},N={"en": "English", "ar": "العربية", "fr": "Français", "es": "Español", "de": "Deutsch", "tr": "Türkçe", "ru": "Русский", "zh": "中文", "hi": "हिन्दी", "pt": "Português", "id": "Indonesia"};var lang="ar";
+try{lang=localStorage.getItem("xl")||""}catch(e){}
+if(!L[lang]){var nl=(navigator.language||"ar").slice(0,2);lang=L[nl]?nl:"ar"}
+function t(k){return L[lang][k]||L.en[k]}
+
+var A=[["ed","Editor","✎","#ffd8e4","#7d1d49","ed"],["nw","Network","⌁","#c2e7ff","#004a77","soon"],["lab","Lab","⚑","#ffdad6","#93000a","soon"],["mon","Monitor","◔","#c4eed0","#0d5128","mon"],["upd","@up","⟳","#eaddff","#4f378b","upd"],["git","Git","⎇","#ffdea3","#5c4200","soon"],["web","Web","◎","#d3e3fd","#0842a0","soon"],["dsk","Desktop","▣","#dfe3eb","#2f3a4a","soon"]];
+var D=[["term","@tm","›_","#1d1b20","#cdeccd","term"],["files","@fl","▤","#ffe08c","#5c4200","files"],["pkg","@pk","⬇","#c4eed0","#0d5128","pkg"],["set","@sg","⚙","#dfe3eb","#2f3a4a","set"]];
+function nm(x){return x[1].charAt(0)==="@"?t(x[1].slice(1)):x[1]}
+function mk(x){var b=document.createElement("button");b.className="ic";b.innerHTML='<u style="background:'+x[3]+';color:'+x[4]+'">'+x[2]+'</u><s>'+nm(x)+'</s>';b.onclick=function(){try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}op(x)};return b}
+function draw(){var g=$("grid"),d=$("dock");g.innerHTML="";d.innerHTML="";A.forEach(function(x){g.appendChild(mk(x))});D.forEach(function(x){d.appendChild(mk(x))})}
+function op(x){document.querySelectorAll(".pg").forEach(function(p){p.classList.remove("on")});
+ var id=x[5]==="soon"?"p-soon":"p-"+x[5];$(id).classList.add("on");$("ti").textContent=nm(x);
+ if(x[5]==="soon"){$("su").textContent=x[2];$("su").style.background=x[3];$("su").style.color=x[4];$("sn").textContent=nm(x)}
+ if(x[5]==="ed")ld();if(x[5]==="files")rf();$("sheet").classList.add("on");if(x[5]==="term")setTimeout(function(){$("ci").focus()},250)}
+function hm(){$("sheet").classList.remove("on")}
+$("bk").onclick=hm;$("gb").onclick=hm;
+function clk(){var n=new Date(),tm=n.toLocaleTimeString(lang,{hour:"2-digit",minute:"2-digit"});$("t1").textContent=tm;$("t2").textContent=tm;$("dt").textContent=n.toLocaleDateString(lang,{weekday:"long",day:"numeric",month:"long"})}
+function res(){var m=navigator.deviceMemory;$("rm").textContent=$("rm2").textContent=m?"≈ "+m+" GB":"—";$("rb").style.width=$("rb2").style.width=m?"35%":"0";
+ if(navigator.storage&&navigator.storage.estimate)navigator.storage.estimate().then(function(e){var u=e.usage||0,q=e.quota||1;$("sm").textContent=$("sm2").textContent=(u/1048576).toFixed(1)+" MB";$("sb2").style.width=$("sb3").style.width=Math.max(2,u/q*100)+"%"}).catch(function(){});
+ $("net").textContent=navigator.onLine?t("on"):t("of");$("nt").style.color=navigator.onLine?"#34d399":"#fbbf24"}
+function ap(){document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";document.querySelectorAll("[data-i]").forEach(function(e){e.textContent=t(e.dataset.i)});$("um").textContent=t("ui");draw();clk();res()}
+var sel=$("lang");Object.keys(N).forEach(function(k){var o=document.createElement("option");o.value=k;o.textContent=N[k];sel.appendChild(o)});sel.value=lang;
+sel.onchange=function(){lang=sel.value;try{localStorage.setItem("xl",lang)}catch(e){}ap()};
+$("upd").onclick=function(){var b=$("upd"),m=$("um");if(!navigator.onLine){m.textContent=t("uo");return}b.disabled=true;b.textContent=t("uc");setTimeout(function(){b.disabled=false;b.textContent=t("ub");m.textContent=t("un")},900)};
+var T=$("tout"),H=[],hi=0,C={help:"help, uname -m, whoami, pwd, ls, clear","uname -m":"aarch64 (demo)",whoami:"xuser",pwd:"/home/xuser",ls:"projects  notes.md  setup.sh"};
+function esc(x){return x.replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function p(x){var d=document.createElement("div");d.innerHTML=x;T.appendChild(d);T.scrollTop=T.scrollHeight}
+var PR='<span class="pr">xuser@xlinux</span>:<span class="pb">~</span>$ ';
+p("X Linux (preview) - type help");
+var FS={"projects":null,"notes.md":"# X Linux\nWelcome!\n","setup.sh":"#!/bin/sh\necho hello\n"},cur="notes.md",ED=["ed","Editor","✎","#ffd8e4","#7d1d49","ed"];
+try{var sv0=localStorage.getItem("xfs");if(sv0)FS=JSON.parse(sv0)}catch(e){}
+function sv(){try{localStorage.setItem("xfs",JSON.stringify(FS))}catch(e){}}
+function rf(){var u=$("fl");u.innerHTML="";var ks=Object.keys(FS).sort();$("fc").textContent=ks.length;ks.forEach(function(k){var li=document.createElement("li");li.innerHTML='<span>'+(FS[k]===null?"📁 ":"📄 ")+esc(k)+'</span><button aria-label="del">✕</button>';li.firstChild.onclick=function(){if(FS[k]!==null){cur=k;op(ED)}};li.lastChild.onclick=function(){delete FS[k];sv();rf()};u.appendChild(li)})}
+function add(d){var n=$("nf").value.trim().replace(/[\/\s]/g,"");if(n&&FS[n]===undefined){FS[n]=d?null:"";sv();$("nf").value="";rf()}}
+$("addf").onclick=function(){add(0)};$("addd").onclick=function(){add(1)};
+function ld(){if(FS[cur]===undefined||FS[cur]===null)cur="notes.md";$("en").textContent=cur;$("ea").value=FS[cur]||""}
+$("svb").onclick=function(){FS[cur]=$("ea").value;sv();var b=this;b.textContent="✓ ✓";try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}setTimeout(function(){b.textContent="✓"},800)};
+var NF=["  \\ \\  / /    xuser@xlinux","   \\ \\/ /     ------------","    >  <      OS: X Linux (preview)","   / /\\ \\     Arch: "+(navigator.userAgent.indexOf("arm")>-1?"arm":"unknown"),"  /_/  \\_\\    Lang: "+lang,"              Mode: offline-ready"].join("\n");
+function run(c){var a=c.split(/\s+/),m=a[0],r=a.slice(1);
+ if(m==="clear")return"\f";
+ if(m==="help")return"help ls cat touch mkdir rm echo pwd whoami date uname neofetch clear";
+ if(m==="ls")return Object.keys(FS).sort().map(function(k){return FS[k]===null?k+"/":k}).join("  ");
+ if(m==="cat")return r[0]&&typeof FS[r[0]]==="string"?FS[r[0]]:"cat: "+(r[0]||"")+": No such file";
+ if(m==="touch"&&r[0]){if(FS[r[0]]===undefined)FS[r[0]]="";sv();return""}
+ if(m==="mkdir"&&r[0]){if(FS[r[0]]===undefined)FS[r[0]]=null;sv();return""}
+ if(m==="rm"&&r[0]){delete FS[r[0]];sv();return""}
+ if(m==="echo"){var j=c.indexOf(">");if(j>0){var f=c.slice(j+1).trim(),tx=c.slice(4,j).trim().replace(/^["']|["']$/g,"");if(f){FS[f]=tx+"\n";sv();return""}}return r.join(" ")}
+ if(m==="pwd")return"/home/xuser";if(m==="whoami")return"xuser";if(m==="date")return new Date().toString();
+ if(m==="uname")return"Linux xlinux (preview) aarch64";if(m==="neofetch")return NF;
+ return m+": command not found (preview)"}
+function ex(){var i=$("ci"),c=i.value.trim();if(!c)return;H.push(c);hi=H.length;p(PR+esc(c));var o=run(c);if(o==="\f")T.innerHTML="";else if(o)p(esc(o));i.value=""}
+C.neofetch=C.touch=C.mkdir=C.echo=C.cat=C.date=1;
+$("run").onclick=ex;$("tcl").onclick=function(){T.innerHTML=""};$("ci").onkeydown=function(e){if(e.key==="Enter")ex()};
+document.querySelectorAll(".keys button").forEach(function(b){b.onclick=function(){var i=$("ci"),k=b.dataset.k;
+ if(k==="↑"){if(hi>0)i.value=H[--hi]||""}else if(k==="↓"){i.value=H[++hi]||""}
+ else if(k==="^C"){p(PR+esc(i.value)+"^C");i.value=""}
+ else if(k==="Tab"){var m=Object.keys(C).filter(function(x){return x.indexOf(i.value)===0&&i.value});if(m.length===1)i.value=m[0]}
+ else i.value+=k;i.focus()}});
+$("dk").onclick=function(){this.classList.toggle("on");document.documentElement.dataset.theme=this.classList.contains("on")?"dark":"light"};
+$("lite").onclick=function(){this.classList.toggle("on")};
+addEventListener("online",res);addEventListener("offline",res);ap();setInterval(clk,30000);
+</script><script>
+if(window.XL){
+document.documentElement.classList.add("nat");
+var NS=JSON.parse(XL.st()),cwd="",shellOn=0,PRn='<span class="pr">root@parrot</span>:<span class="pb">~</span># ';
+document.querySelector(".tw").style.display="none";
+document.querySelector('[data-k="Tab"]').style.display="none";
+function strip(x){return x.replace(/\x1b\[[0-9;?]*[ -\/]*[@-~]/g,"").replace(/\r/g,"")}
+window.xlOut=function(x){T.appendChild(document.createTextNode(strip(x)));T.scrollTop=T.scrollHeight};
+window.xlLog=function(x){xlOut(x+"\n")};
+window.xlDone=function(){$("ibtn").disabled=false;nat();res()};
+window.xlBack=function(){var o=$("sheet").classList.contains("on");hm();return o};
+function lockUI(){document.body.innerHTML='<div style="position:fixed;inset:0;background:#7f1d1d;color:#fff;display:grid;place-items:center;text-align:center;padding:30px;font:18px system-ui">X Linux<br><br>Integrity check failed.<br>The cornerstone file was modified,<br>so the application has been stopped.</div>'}
+function nat(){NS=JSON.parse(XL.st());if(NS.locked){lockUI();return}$("ib").style.display=NS.installed?"none":"block";
+ document.querySelector(".tt").textContent=NS.installed?"root@parrot: ~":"Parrot OS";
+ if(NS.installed&&!shellOn){shellOn=1;T.innerHTML="";XL.shell()}}
+function res(){NS=JSON.parse(XL.st());if(NS.locked){lockUI();return}var G=1073741824;
+ $("rm").textContent=$("rm2").textContent=(NS.memTotal/G).toFixed(1)+" GB";
+ $("rb").style.width=$("rb2").style.width=Math.round((1-NS.memAvail/NS.memTotal)*100)+"%";
+ $("sm").textContent=$("sm2").textContent=(NS.storFree/G).toFixed(1)+" GB";
+ $("sb2").style.width=$("sb3").style.width=Math.round((1-NS.storFree/NS.storTotal)*100)+"%";
+ $("net").textContent=navigator.onLine?t("on"):t("of");$("nt").style.color=navigator.onLine?"#34d399":"#fbbf24"}
+$("ibtn").onclick=function(){this.disabled=true;T.innerHTML="";XL.install()};
+function ex(){var i=$("ci"),c=i.value;if(!NS.installed){p("Install Parrot OS first (button above).");return}
+ if(c.trim()==="clear"){T.innerHTML="";i.value="";return}
+ H.push(c);hi=H.length;p(PRn+esc(c));XL.send(c);i.value=""}
+$("run").onclick=ex;$("ci").onkeydown=function(e){if(e.key==="Enter")ex()};
+document.querySelectorAll(".keys button").forEach(function(b){b.onclick=function(){var i=$("ci"),k=b.dataset.k;
+ if(k==="↑"){if(hi>0)i.value=H[--hi]||""}else if(k==="↓"){i.value=H[++hi]||""}
+ else if(k==="^C"){XL.stop();p("^C");shellOn=0;setTimeout(nat,300)}
+ else if(k!=="Tab")i.value+=k;i.focus()}});
+function pth(k){return(cwd?cwd+"/":"")+k}
+function rf(){var u=$("fl"),L=JSON.parse(XL.ls(cwd));u.innerHTML="";$("fc").textContent=L.length;
+ document.querySelector("#p-files h2").textContent="~/"+cwd;
+ if(cwd){var up=document.createElement("li");up.innerHTML="<span>⬆ ..</span>";up.firstChild.onclick=function(){cwd=cwd.split("/").slice(0,-1).join("/");rf()};u.appendChild(up)}
+ L.forEach(function(x){var k=x.n,li=document.createElement("li");li.innerHTML="<span>"+(x.d?"📁 ":"📄 ")+esc(k)+'</span><button aria-label="del">✕</button>';
+  li.firstChild.onclick=function(){if(x.d){cwd=pth(k);rf()}else{cur=pth(k);op(ED)}};
+  li.lastChild.onclick=function(){XL.rm(pth(k));rf()};u.appendChild(li)})}
+function add(d){var n=$("nf").value.trim().replace(/[\/\s]/g,"");if(!n)return;if(d)XL.mkdir(pth(n));else XL.write(pth(n),"");$("nf").value="";rf()}
+$("addf").onclick=function(){add(0)};$("addd").onclick=function(){add(1)};
+function ld(){$("en").textContent=cur;$("ea").value=XL.read(cur)}
+$("svb").onclick=function(){XL.write(cur,$("ea").value);var b=this;b.textContent="✓ ✓";setTimeout(function(){b.textContent="✓"},800)};
+$("dk").onclick=function(){this.classList.toggle("on");var on=this.classList.contains("on");document.documentElement.dataset.theme=on?"dark":"light";XL.dark(on)};
+
+var TR={"en": ["Add to home screen", "New programs installed", "Remove shortcut", "Add", "Cancel", "Search programs", "Install"], "ar": ["أضف إلى الشاشة الرئيسية", "برامج جديدة تم تثبيتها", "إزالة الاختصار", "إضافة", "إلغاء", "ابحث في البرامج", "تثبيت"], "fr": ["Ajouter à l'écran d'accueil", "Nouveaux programmes installés", "Supprimer le raccourci", "Ajouter", "Annuler", "Rechercher", "Installer"], "es": ["Añadir a inicio", "Programas nuevos instalados", "Quitar acceso directo", "Añadir", "Cancelar", "Buscar programas", "Instalar"], "de": ["Zum Startbildschirm", "Neue Programme installiert", "Verknüpfung entfernen", "Hinzufügen", "Abbrechen", "Programme suchen", "Installieren"], "tr": ["Ana ekrana ekle", "Yeni programlar kuruldu", "Kısayolu kaldır", "Ekle", "İptal", "Program ara", "Kur"], "ru": ["На главный экран", "Установлены новые программы", "Удалить ярлык", "Добавить", "Отмена", "Поиск программ", "Установить"], "zh": ["添加到主屏幕", "已安装新程序", "移除快捷方式", "添加", "取消", "搜索程序", "安装"], "hi": ["होम स्क्रीन पर जोड़ें", "नए प्रोग्राम इंस्टॉल हुए", "शॉर्टकट हटाएँ", "जोड़ें", "रद्द करें", "प्रोग्राम खोजें", "इंस्टॉल"], "pt": ["Adicionar ao início", "Novos programas instalados", "Remover atalho", "Adicionar", "Cancelar", "Buscar programas", "Instalar"], "id": ["Tambah ke layar utama", "Program baru terpasang", "Hapus pintasan", "Tambah", "Batal", "Cari program", "Pasang"]},KS=["pin","newp","rmv","add","cl","srch","ins"];
+for(var lg in TR){if(L[lg])KS.forEach(function(k,i){L[lg][k]=TR[lg][i]})}
+var PINS=[];try{PINS=JSON.parse(localStorage.getItem("xpins")||"[]")}catch(e){}
+function sp(){try{localStorage.setItem("xpins",JSON.stringify(PINS))}catch(e){}}
+function pop(title,okTxt,okFn,fill){$("ph3").textContent=title;var l=$("pl");l.innerHTML="";fill(l);$("pno").textContent=t("cl");$("pyes").textContent=okTxt;
+ $("pyes").onclick=function(){$("pop").classList.remove("on");okFn()};$("pno").onclick=function(){$("pop").classList.remove("on")};$("pop").classList.add("on")}
+function hue(n){var h=0;for(var i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))%360;return h}
+function mkp(pk){var b=document.createElement("button");b.className="ic";var h=hue(pk.c);
+ var m={};try{m=JSON.parse(XL.meta(pk.c))}catch(e){}
+ b.innerHTML=m.i?'<u style="background:#fff;overflow:hidden"><img alt="" src="'+m.i+'" style="width:78%;height:78%;object-fit:contain"></u><s>'+esc(m.n||pk.n)+'</s>':'<u style="background:hsl('+h+' 75% 86%);color:hsl('+h+' 60% 25%)">'+esc(pk.n.charAt(0).toUpperCase())+'</u><s>'+esc(m.n||pk.n)+'</s>';
+ var tm=0,lp=0;function rm(){lp=1;pop(t("rmv")+": "+pk.n,t("rmv"),function(){PINS=PINS.filter(function(x){return x.c!==pk.c});sp();draw()},function(){})}
+ b.ontouchstart=function(){lp=0;tm=setTimeout(rm,550)};b.ontouchend=b.ontouchmove=b.ontouchcancel=function(){clearTimeout(tm)};
+ b.oncontextmenu=function(e){e.preventDefault();rm()};
+ b.onclick=function(){if(lp){lp=0;return}try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}op(D[0]);if(NS.installed){p(PRn+esc(pk.c));XL.send(pk.c)}};return b}
+function draw(){var g=$("grid"),d=$("dock");g.innerHTML="";d.innerHTML="";A.forEach(function(x){g.appendChild(mk(x))});PINS.forEach(function(x){g.appendChild(mkp(x))});D.forEach(function(x){d.appendChild(mk(x))})}
+function showNew(n){var sel={};pop(t("newp"),t("add"),function(){n.forEach(function(k){if(sel[k]&&!PINS.some(function(x){return x.c===k}))PINS.push({c:k,n:k})});sp();draw()},function(l){
+ n.slice(0,60).forEach(function(k){sel[k]=n.length<=3;var r=document.createElement("label");r.className="rw";r.innerHTML='<input type="checkbox"'+(sel[k]?" checked":"")+'><span>'+esc(k)+'</span>';r.firstChild.onchange=function(){sel[k]=this.checked};l.appendChild(r)})})}
+var snap={},wt=0;
+function watch(){var m={};try{JSON.parse(XL.bins()).forEach(function(k){m[k]=1})}catch(e){return}snap=m;clearInterval(wt);var tries=0,prev=-1;
+ wt=setInterval(function(){tries++;if(tries>225){clearInterval(wt);return}var all=JSON.parse(XL.bins()),pn=PINS.map(function(x){return x.c});
+  var nw=all.filter(function(k){return !snap[k]&&pn.indexOf(k)<0});
+  if(nw.length&&nw.length===prev){clearInterval(wt);showNew(nw)}prev=nw.length},4000)}
+var ex0=ex;ex=function(){var c=$("ci").value;if(NS.installed&&/\b(apt|apt-get|dpkg)\b[^;&|]*\b(install|-i)\b/.test(c))watch();ex0()};
+$("run").onclick=ex;$("ci").onkeydown=function(e){if(e.key==="Enter")ex()};
+function pl(){var q=$("ps").value.trim().toLowerCase(),u=$("pl2");u.innerHTML="";var pn=PINS.map(function(x){return x.c}),n=0;
+ JSON.parse(XL.bins()).forEach(function(k){if(n>=60||pn.indexOf(k)>=0||(q&&k.indexOf(q)<0))return;n++;var li=document.createElement("li");li.innerHTML="<span>"+esc(k)+"</span><button aria-label=\"pin\">＋</button>";
+  li.onclick=function(){PINS.push({c:k,n:k});sp();draw();pl()};u.appendChild(li)})}
+$("ps").oninput=pl;
+$("pib").onclick=function(){var n=$("pq").value.trim().toLowerCase();if(!/^[a-z0-9][a-z0-9+.\-]*$/.test(n))return;op(D[0]);if(!NS.installed)return;watch();
+ var c="DEBIAN_FRONTEND=noninteractive apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y "+n;p(PRn+esc(c));XL.send(c);$("pq").value=""};
+var op0=op;op=function(x){op0(x);if(x[5]==="pkg")pl()};
+var ap0=ap;ap=function(){ap0();$("ps").placeholder=t("srch")};
+ap();
+
+var G2=1073741824;
+var ST={theme:"auto",accent:"",wp:0,ui:100,rmotion:0,haptic:1,tfs:13,shell:"auto",awake:0,lite:0,dns:"1.1.1.1 8.8.8.8"};
+try{Object.assign(ST,JSON.parse(localStorage.getItem("xset")||"{}"))}catch(e){}
+function svST(){try{localStorage.setItem("xset",JSON.stringify(ST))}catch(e){}}
+var SL={en:{c_disp:"Display & theme",c_acc:"Accessibility",c_lang:"Language",c_term:"Terminal",c_perf:"Performance",c_stor:"Storage",c_net:"Network",c_bk:"Backup & restore",c_env:"Linux environment",c_priv:"Privacy & security",c_about:"About",theme:"Theme",auto:"Auto",light:"Light",dark:"Dark",accent:"Accent color",wall:"Wallpaper",ui:"Text size (apps)",rmot:"Reduce motion",hap:"Haptic feedback",tfs:"Terminal font size",shell:"Default shell (next session)",awake:"Keep screen on",lite:"Lite mode (fewer effects)",ram:"Memory (free / total)",free:"Free space",lsz:"Linux size",calc:"Calculate",cc:"Clear download cache",dns:"DNS servers",stt:"Status",exp:"Export",imp:"Apply",cp:"Copy",envs:"Installed",arch:"Architecture",rep:"Repair (safe)",rst:"Reset Linux…",rstw:"This DELETES all Linux files and installed programs. Type RESET to confirm.",pv1:"No data is collected. No analytics, no ads.",pv2:"Network use: registry-1.docker.io and auth.docker.io (Parrot OS image), plus your own apt mirrors.",pv3:"Linux runs without root inside the app sandbox. Files are limited to the Linux home folder.",author:"Author",alias:"Alias",region:"Region",ver:"Version",integ:"Integrity",verified:"Verified ✓",dev:"Device",lic:"License: GPLv3 (open source)",yes:"Yes",no:"No",on:"Online",off:"Offline",done:"Done ✓",bkh:"Export settings and shortcuts as text, or paste and apply."},
+ar:{c_disp:"العرض والمظهر",c_acc:"إمكانية الوصول",c_lang:"اللغة",c_term:"الطرفية",c_perf:"الأداء",c_stor:"التخزين",c_net:"الشبكة",c_bk:"النسخ الاحتياطي والاستعادة",c_env:"بيئة Linux",c_priv:"الخصوصية والأمان",c_about:"حول التطبيق",theme:"المظهر",auto:"تلقائي",light:"فاتح",dark:"داكن",accent:"لون التمييز",wall:"الخلفية",ui:"حجم النص (التطبيقات)",rmot:"تقليل الحركة",hap:"الاهتزاز عند اللمس",tfs:"حجم خط الطرفية",shell:"الشل الافتراضي (الجلسة القادمة)",awake:"إبقاء الشاشة مضاءة",lite:"وضع Lite (مؤثرات أقل)",ram:"الذاكرة (حرة / الكلية)",free:"المساحة الحرة",lsz:"حجم Linux",calc:"احسب",cc:"مسح ذاكرة التنزيل",dns:"خوادم DNS",stt:"الحالة",exp:"تصدير",imp:"تطبيق",cp:"نسخ",envs:"مثبّت",arch:"المعمارية",rep:"إصلاح (آمن)",rst:"إعادة ضبط Linux…",rstw:"سيحذف كل ملفات Linux والبرامج المثبتة. اكتب RESET للتأكيد.",pv1:"لا يتم جمع أي بيانات. لا تحليلات ولا إعلانات.",pv2:"الاتصالات: registry-1.docker.io وauth.docker.io (صورة Parrot OS) ومستودعات apt الخاصة بك.",pv3:"يعمل Linux دون Root داخل صندوق التطبيق، والملفات محصورة في مجلد Linux الرئيسي.",author:"المؤلف",alias:"الاسم الشهير",region:"المنطقة",ver:"الإصدار",integ:"سلامة الملفات",verified:"تم التحقق ✓",dev:"الجهاز",lic:"الترخيص: GPLv3 (مفتوح المصدر)",yes:"نعم",no:"لا",on:"متصل",off:"غير متصل",done:"تم ✓",bkh:"صدّر الإعدادات والاختصارات كنص، أو الصق نصًا وطبّقه."}};
+function s_(k){return(SL[lang]&&SL[lang][k])||SL.en[k]||k}
+var ACC=["","#6750a4","#0b6bcb","#0f766e","#b91c1c","#c2410c","#9d174d"];
+var WP=[0,["linear-gradient(#e0f2fe,#fce7f3)","linear-gradient(#0b1020,#1b1030)"],["linear-gradient(#dcfce7,#e0f2fe)","linear-gradient(#06140e,#0a1a24)"],["linear-gradient(#ffedd5,#fee2e2)","linear-gradient(#1a0f08,#220b0b)"],["linear-gradient(#ede9fe,#ddd6fe)","linear-gradient(#130b24,#1d1040)"]];
+function lum(h){return(0.299*parseInt(h.substr(1,2),16)+0.587*parseInt(h.substr(3,2),16)+0.114*parseInt(h.substr(5,2),16))/255}
+try{var V0=navigator.vibrate&&navigator.vibrate.bind(navigator);navigator.vibrate=function(x){return ST.haptic&&V0?V0(x):false}}catch(e){}
+function applySet(){var d=document.documentElement,dark=ST.theme==="dark"||(ST.theme==="auto"&&matchMedia("(prefers-color-scheme:dark)").matches);
+ d.dataset.theme=dark?"dark":"light";try{XL.dark(dark)}catch(e){}
+ if(ST.accent){d.style.setProperty("--a",ST.accent);d.style.setProperty("--on",lum(ST.accent)>0.6?"#1d1b20":"#fff")}else{d.style.removeProperty("--a");d.style.removeProperty("--on")}
+ $("bd").style.zoom=ST.ui/100;d.classList.toggle("lite",!!ST.lite);d.classList.toggle("rm",!!ST.rmotion);
+ T.style.fontSize=ST.tfs+"px";$("ph").style.background=ST.wp?WP[ST.wp][dark?1:0]:"";
+ try{XL.awake(!!ST.awake);XL.setShell(ST.shell)}catch(e){}}
+function E(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!==undefined)e.innerHTML=h;return e}
+var setSub=null;
+var CATS=[["disp","◐"],["acc","♿"],["lang","🌐"],["term","›_"],["perf","⚡"],["stor","▤"],["net","⌁"],["bk","⟲"],["env","⬢"],["priv","🔒"],["about","ⓘ"]];
+function row(l,c){var r=E("div","set");r.appendChild(E("div","",l));if(c)r.appendChild(c);return r}
+function inf(l,v){return row(l,E("span","mu",v))}
+function swc(k){var b=E("button","sw"+(ST[k]?" on":""));b.onclick=function(){ST[k]=ST[k]?0:1;svST();applySet();renderSet()};return b}
+function selc(k,o,fn){var s=E("select");o.forEach(function(x){var op=E("option","",x[1]);op.value=x[0];s.appendChild(op)});s.value=ST[k];s.onchange=function(){ST[k]=s.value;svST();applySet();if(fn)fn()};return s}
+function rng(k,a,b,st){var w=E("div");w.style.cssText="display:flex;gap:8px;align-items:center";var i=E("input");i.type="range";i.min=a;i.max=b;i.step=st||1;i.value=ST[k];var v=E("span","mu",ST[k]);i.oninput=function(){ST[k]=+i.value;v.textContent=i.value;applySet()};i.onchange=svST;w.appendChild(i);w.appendChild(v);return w}
+function sws(k,list,bg){var w=E("div");w.style.cssText="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;max-width:60%";list.forEach(function(c){var b=E("button");b.style.cssText="width:34px;height:34px;border-radius:50%;border:3px solid "+(ST[k]===c?"var(--tx)":"transparent")+";background:"+bg(c);b.onclick=function(){ST[k]=c;svST();applySet();renderSet()};w.appendChild(b)});return w}
+function bt(txt,fn){var b=E("button","btn",txt);b.style.cssText="width:auto;padding:10px 18px";b.onclick=fn;return b}
+function flash(b,txt){var o=b.textContent;b.textContent=txt;setTimeout(function(){b.textContent=o},1200)}
+window.xlSize=function(n){var e=$("szv");if(e)e.textContent=(n/G2).toFixed(2)+" GB"};
+function langSel(){var s=E("select");Object.keys(N).forEach(function(k){var o=E("option","",N[k]);o.value=k;s.appendChild(o)});s.value=lang;s.onchange=function(){lang=s.value;try{localStorage.setItem("xl",lang)}catch(e){}ap();$("ti").textContent=s_("c_lang");renderSet()};return s}
+function renderSet(){var box=$("sx");if(!box)return;box.innerHTML="";var c=E("div","card");box.appendChild(c);
+ if(!setSub){CATS.forEach(function(x){var b=E("button","crow",'<span class="gi">'+x[1]+'</span><b>'+s_("c_"+x[0])+'</b><i>›</i>');b.onclick=function(){setSub=x[0];$("ti").textContent=s_("c_"+x[0]);renderSet()};c.appendChild(b)});return}
+ var add2=function(r){c.appendChild(r)};
+ if(setSub==="disp"){add2(row(s_("theme"),selc("theme",[["auto",s_("auto")],["light",s_("light")],["dark",s_("dark")]],renderSet)));
+  add2(row(s_("accent"),sws("accent",ACC,function(x){return x||"conic-gradient(#6750a4,#22d3ee,#6750a4)"})));
+  add2(row(s_("wall"),sws("wp",[0,1,2,3,4],function(i){return i?WP[i][0]:"conic-gradient(#ffd8e4,#c2e7ff,#ffd8e4)"})))}
+ else if(setSub==="acc"){add2(row(s_("ui"),rng("ui",80,140,5)));add2(row(s_("rmot"),swc("rmotion")));add2(row(s_("hap"),swc("haptic")))}
+ else if(setSub==="lang"){add2(row(s_("c_lang"),langSel()))}
+ else if(setSub==="term"){add2(row(s_("tfs"),rng("tfs",10,20)));add2(row(s_("shell"),selc("shell",[["auto","auto"],["bash","bash"],["sh","sh"]])));add2(row(s_("awake"),swc("awake")))}
+ else if(setSub==="perf"){add2(row(s_("lite"),swc("lite")));add2(inf(s_("ram"),(NS.memAvail/G2).toFixed(1)+" / "+(NS.memTotal/G2).toFixed(1)+" GB"))}
+ else if(setSub==="stor"){add2(inf(s_("free"),(NS.storFree/G2).toFixed(1)+" / "+(NS.storTotal/G2).toFixed(1)+" GB"));
+  var w=E("div");w.style.cssText="display:flex;gap:10px;align-items:center";var v=E("span","mu","—");v.id="szv";w.appendChild(v);w.appendChild(bt(s_("calc"),function(){v.textContent="…";XL.size()}));add2(row(s_("lsz"),w));
+  add2(row(s_("cc"),bt("🧹",function(){var n=XL.clearCache();flash(this,(n/1048576).toFixed(0)+" MB")})))}
+ else if(setSub==="net"){add2(row(s_("dns"),selc("dns",[["1.1.1.1 8.8.8.8","Cloudflare + Google"],["8.8.8.8 8.8.4.4","Google"],["9.9.9.9 149.112.112.112","Quad9"]],function(){XL.setDns(ST.dns)})));add2(inf(s_("stt"),navigator.onLine?s_("on"):s_("off")));add2(inf("resolv.conf",XL.getDns()||"—"))}
+ else if(setSub==="bk"){add2(E("p","mu",s_("bkh")));var ta=E("textarea");ta.style.cssText="width:100%;min-height:150px;margin:10px 0;background:var(--sf2);color:var(--tx);border:0;border-radius:14px;padding:12px;font:12px ui-monospace,monospace;direction:ltr";
+  var bx=E("div");bx.style.cssText="display:flex;gap:8px;flex-wrap:wrap";
+  bx.appendChild(bt(s_("exp"),function(){ta.value=JSON.stringify({s:ST,p:PINS},null,1)}));
+  bx.appendChild(bt(s_("cp"),function(){XL.copy(ta.value);flash(this,s_("done"))}));
+  bx.appendChild(bt(s_("imp"),function(){try{var o=JSON.parse(ta.value);if(o.s)Object.assign(ST,o.s);if(Array.isArray(o.p))PINS=o.p.filter(function(x){return x&&typeof x.c==="string"&&/^[\w.+-]+$/.test(x.c)}).map(function(x){return{c:x.c,n:String(x.n||x.c)}});svST();sp();applySet();draw();flash(this,s_("done"))}catch(e){flash(this,"✕")}}));
+  add2(ta);add2(bx)}
+ else if(setSub==="env"){var dv={};try{dv=JSON.parse(XL.device())}catch(e){}
+  add2(inf(s_("envs"),NS.installed?s_("yes"):s_("no")));add2(inf("PRoot",NS.proot?s_("yes"):s_("no")));add2(inf(s_("arch"),dv.abi||"?"));
+  add2(row(s_("rep"),bt("🔧",function(){flash(this,XL.repair()?s_("done"):"✕")})));
+  add2(row(s_("rst"),bt("⚠",function(){pop(s_("rst"),s_("rst"),function(){var i=$("rin");if(i&&i.value==="RESET"){XL.reset();shellOn=0;T.innerHTML="";nat();res()}},function(l){l.appendChild(E("p","mu",s_("rstw")));var i=E("input");i.id="rin";i.style.cssText="width:100%;padding:12px;border-radius:14px;border:1px solid var(--ln);background:var(--sf2);color:var(--tx);margin-top:10px;font:15px monospace";l.appendChild(i)})})))}
+ else if(setSub==="priv"){add2(E("p","mu",s_("pv1")));add2(E("p","mu",s_("pv2")));add2(E("p","mu",s_("pv3")))}
+ else if(setSub==="about"){var cr="";try{cr=XL.credits()}catch(e){}var g=function(k){var m=cr.match(new RegExp("^"+k+": (.*)$","m"));return m?m[1]:"—"};var dv2={};try{dv2=JSON.parse(XL.device())}catch(e){}
+  var h=E("div","big",'<u style="background:linear-gradient(135deg,#7c5cff,#22d3ee);color:#fff;font-weight:700">X</u><h2>X Linux</h2>');h.style.padding="6px 0 14px";c.appendChild(h);
+  add2(inf(s_("author"),g("Author")));add2(inf(s_("alias"),g("Alias")));add2(inf(s_("region"),g("Region")));add2(inf(s_("ver"),"0.2.0"));
+  add2(inf(s_("integ"),cr?s_("verified"):"✕"));add2(inf(s_("dev"),(dv2.model||"?")+" · Android "+(dv2.android||"?")));add2(E("p","mu",s_("lic")))}}
+var op1=op;op=function(x){op1(x);if(x[5]==="set"){setSub=null;$("ti").textContent=nm(D[3]);renderSet()}};
+$("bk").onclick=function(){if(setSub&&$("p-set").classList.contains("on")){setSub=null;$("ti").textContent=nm(D[3]);renderSet()}else hm()};
+applySet();
+cur="notes.md";nat();res();setInterval(res,10000);
+setTimeout(function(){if(!NS.installed)op(D[0])},400);
+}
+</script>
+</body></html>
